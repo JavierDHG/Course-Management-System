@@ -1,0 +1,181 @@
+{% extends 'layout/layout.html' %}
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/pay_method.css' %}">
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Breadcrumb Navigation -->
+        <div class="col-12 mb-4">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-decoration-none">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'view_package' %}" class="text-decoration-none">Paquetes</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Método de Pago</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Payment Methods Section -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-primary text-white py-3">
+                    <h1 class="h3 mb-0">
+                        <i class="bi bi-credit-card me-2"></i>Selecciona un Método de Pago
+                    </h1>
+                </div>
+                <div class="card-body p-4">
+                    
+                    <!-- Payment Methods Tabs -->
+                    <ul class="nav nav-pills mb-4" id="paymentTabs" role="tablist">
+                        <li class="nav-item me-2" role="presentation">
+                            <button class="nav-link active d-flex align-items-center" id="paypal-tab" data-bs-toggle="pill" data-bs-target="#paypal" type="button" role="tab" aria-controls="paypal" aria-selected="true">
+                                <i class="bi bi-paypal me-2 text-primary"></i>PayPal
+                            </button>
+                        </li>
+                    </ul>
+                    
+                    <!-- Payment Methods Content -->
+                    <div class="tab-content" id="paymentTabsContent">
+                        <!-- PayPal -->
+                        <div class="tab-pane fade show active" id="paypal" role="tabpanel" aria-labelledby="paypal-tab">
+                            <div class="p-3 bg-light rounded mb-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="me-3">
+                                        <i class="bi bi-paypal text-primary" style="font-size: 2rem;"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="mb-1">Pago con PayPal</h5>
+                                        <p class="text-muted mb-0 small">Rápido, seguro y sin compartir tus datos financieros</p>
+                                    </div>
+                                </div>
+                                <p class="small text-muted mb-0">Serás redirigido a PayPal para completar el pago de forma segura.</p>
+                            </div>
+                            
+                            <form method="post" action="{% url 'pay_package_method' package.id %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="package_id" value="{{ package.id }}">
+                                <input type="hidden" name="payment_method" value="paypal">
+                                <button type="submit" class="btn btn-primary btn-lg w-100">
+                                    <i class="bi bi-paypal me-2"></i>Pagar con PayPal
+                                </button>
+                            </form>
+                        </div>
+
+                        
+                        <!-- Bank Transfer -->
+                        <div class="tab-pane fade" id="transfer" role="tabpanel" aria-labelledby="transfer-tab">
+                            <div class="alert alert-info mb-4">
+                                <h6 class="alert-heading"><i class="bi bi-info-circle me-2"></i>Instrucciones para la transferencia</h6>
+                                <p class="mb-2">Por favor, realiza una transferencia con los siguientes datos:</p>
+                                <ul class="mb-0">
+                                    <li><strong>Beneficiario:</strong> My_curses.com</li>
+                                    <li><strong>IBAN:</strong> ES12 3456 7890 1234 5678 9012</li>
+                                    <li><strong>Concepto:</strong> Paquete {{ package.id }} - {{ user.username }}</li>
+                                    <li><strong>Importe:</strong> {{ package.price }} €</li>
+                                </ul>
+                            </div>
+                            
+                            <form method="post" action="{% url 'pay_package_method' package.id %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="package_id" value="{{ package.id }}">
+                                <input type="hidden" name="payment_method" value="transfer">
+                                <button type="submit" class="btn btn-primary btn-lg w-100">
+                                    <i class="bi bi-check-circle me-2"></i>He realizado la transferencia
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-light py-3">
+                    <div class="d-flex justify-content-center align-items-center">
+                        <i class="bi bi-shield-lock me-2 text-success"></i>
+                        <span class="text-muted small">Pago 100% seguro. Tus datos están protegidos.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Order Summary Section -->
+        <div class="col-lg-4 mt-4 mt-lg-0">
+            <div class="card border-0 shadow-sm sticky-lg-top" style="top: 20px;">
+                <div class="card-header bg-light py-3">
+                    <h5 class="mb-0">Resumen del Pedido</h5>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Package Image -->
+                    <div class="text-center mb-4">
+                        {% if package.imagen %}
+                            <img src="{{ package.imagen.url }}" alt="Imagen del paquete" class="img-fluid rounded" style="max-height: 150px;">
+                        {% else %}
+                            <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 150px;">
+                                <i class="bi bi-box text-muted" style="font-size: 3rem;"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Package Details -->
+                    <h4 class="fw-bold mb-3">{{ package.name }}</h4>
+                    <p class="text-muted mb-4">{{ package.description|truncatewords:20 }}</p>
+                    
+                    <!-- Price Breakdown -->
+                    <div class="border-top pt-3 mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Precio del paquete</span>
+                            <span>{{ package.price }} €</span>
+                        </div>
+                        {% if package.discount %}
+                            <div class="d-flex justify-content-between mb-2 text-success">
+                                <span>Descuento</span>
+                                <span>-{{ package.discount }} €</span>
+                            </div>
+                        {% endif %}
+                        {% if package.tax %}
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>IVA (21%)</span>
+                                <span>{{ package.tax }} €</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Total -->
+                    <div class="d-flex justify-content-between border-top pt-3 mb-4">
+                        <span class="fw-bold">Total</span>
+                        <span class="fw-bold text-primary fs-5">{{ package.price }} €</span>
+                    </div>
+                    
+                    <!-- Benefits -->
+                    <div class="mb-0">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <span class="small">Acceso inmediato al contenido</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <span class="small">Garantía de devolución de 30 días</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <span class="small">Soporte técnico incluido</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-light py-3">
+                    <a href="{% url 'view_package' %}" class="btn btn-outline-secondary w-100">
+                        <i class="bi bi-arrow-left me-2"></i>Volver a paquetes
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/pay_package.js' %}"></script>
+{% endblock %}

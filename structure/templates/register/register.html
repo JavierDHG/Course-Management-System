@@ -1,0 +1,217 @@
+{% extends 'layout/layout.html' %}
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/register.css' %}">
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-sm-10 col-md-8 col-lg-6">
+            <div class="card border-0 shadow-lg">
+                <!-- Header de la tarjeta -->
+                <div class="card-header bg-primary text-white text-center p-4">
+                    <div class="mb-3">
+                        <i class="bi bi-person-plus-fill" style="font-size: 3rem;"></i>
+                    </div>
+                    <h1 class="h3 mb-0">Crear Cuenta</h1>
+                    <p class="mb-0 text-white-50">Únete a nuestra plataforma de cursos</p>
+                </div>
+                
+                <!-- Cuerpo de la tarjeta -->
+                <div class="card-body p-4">
+                    <!-- Mensajes de error -->
+                    {% if form.errors or error %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            {% if error %}
+                                {{ error }}
+                            {% else %}
+                                Por favor corrige los errores a continuación.
+                            {% endif %}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endif %}
+
+                    <!-- Formulario de registro -->
+                    <form method="POST" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <!-- Nombre de usuario -->
+                        <div class="form-floating mb-3">
+                            <input type="text" 
+                                   class="form-control {% if form.username.errors %}is-invalid{% endif %}" 
+                                   id="username" 
+                                   name="username" 
+                                   placeholder="Nombre de usuario"
+                                   value="{{ form.username.value|default:'' }}"
+                                   required>
+                            <label for="username">
+                                <i class="bi bi-person me-1"></i>Nombre de usuario
+                            </label>
+                            {% if form.username.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.username.errors.0 }}
+                                </div>
+                            {% else %}
+                                <div class="invalid-feedback">
+                                    Por favor elige un nombre de usuario.
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Correo electrónico -->
+                        <div class="form-floating mb-3">
+                            <input type="email" 
+                                   class="form-control {% if form.email.errors %}is-invalid{% endif %}" 
+                                   id="email" 
+                                   name="email" 
+                                   placeholder="correo@ejemplo.com"
+                                   value="{{ form.email.value|default:'' }}"
+                                   required>
+                            <label for="email">
+                                <i class="bi bi-envelope me-1"></i>Correo electrónico
+                            </label>
+                            {% if form.email.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.email.errors.0 }}
+                                </div>
+                            {% else %}
+                                <div class="invalid-feedback">
+                                    Por favor ingresa un correo electrónico válido.
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Contraseña -->
+                        <div class="form-floating mb-3">
+                            <input type="password" 
+                                   class="form-control {% if form.password.errors %}is-invalid{% endif %}" 
+                                   id="password" 
+                                   name="password" 
+                                   placeholder="Contraseña"
+                                   required>
+                            <label for="password">
+                                <i class="bi bi-key me-1"></i>Contraseña
+                            </label>
+                            <div class="input-group-text position-absolute end-0 top-50 translate-middle-y me-3" 
+                                 style="background: none; border: none; cursor: pointer; z-index: 10;"
+                                 onclick="togglePassword('password', 'togglePasswordIcon')">
+                                <i class="bi bi-eye" id="togglePasswordIcon"></i>
+                            </div>
+                            {% if form.password.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.password.errors.0 }}
+                                </div>
+                            {% else %}
+                                <div class="invalid-feedback">
+                                    Por favor crea una contraseña.
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Medidor de fortaleza de contraseña -->
+                        <div class="mb-3">
+                            <div class="progress" style="height: 5px;">
+                                <div class="progress-bar bg-danger" id="password-strength" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <small class="text-muted" id="password-strength-text">Fortaleza de la contraseña</small>
+                        </div>
+                        
+                        <!-- Confirmar contraseña -->
+                        <div class="form-floating mb-3">
+                            <input type="password" 
+                                   class="form-control" 
+                                   id="confirm_password" 
+                                   name="confirm_password" 
+                                   placeholder="Confirmar Contraseña"
+                                   required>
+                            <label for="confirm_password">
+                                <i class="bi bi-key-fill me-1"></i>Confirmar Contraseña
+                            </label>
+                            <div class="input-group-text position-absolute end-0 top-50 translate-middle-y me-3" 
+                                 style="background: none; border: none; cursor: pointer; z-index: 10;"
+                                 onclick="togglePassword('confirm_password', 'toggleConfirmIcon')">
+                                <i class="bi bi-eye" id="toggleConfirmIcon"></i>
+                            </div>
+                            <div class="invalid-feedback">
+                                Las contraseñas no coinciden.
+                            </div>
+                        </div>                     
+                        
+                        <!-- Botón de envío -->
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-person-plus me-2"></i>Crear Cuenta
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Footer de la tarjeta -->
+                <div class="card-footer bg-light text-center p-4">
+                    <p class="mb-0 text-muted">
+                        ¿Ya tienes cuenta? 
+                        <a href="{% url 'login' %}" class="text-primary text-decoration-none fw-semibold">
+                            Inicia sesión aquí
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Términos y Condiciones -->
+<div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="termsModalLabel">Términos y Condiciones</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Estos son los términos y condiciones de uso de nuestra plataforma de cursos.</p>
+                <h6>1. Uso del Servicio</h6>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl.</p>
+                <h6>2. Registro y Cuentas</h6>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl.</p>
+                <h6>3. Contenido del Usuario</h6>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Entendido</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Política de Privacidad -->
+<div class="modal fade" id="privacyModal" tabindex="-1" aria-labelledby="privacyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="privacyModalLabel">Política de Privacidad</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Esta es nuestra política de privacidad que explica cómo recopilamos y utilizamos tus datos.</p>
+                <h6>1. Recopilación de Información</h6>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl.</p>
+                <h6>2. Uso de la Información</h6>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl.</p>
+                <h6>3. Protección de Datos</h6>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Entendido</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/register.js' %}"></script>
+{% endblock %}

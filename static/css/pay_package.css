@@ -1,0 +1,57 @@
+.package-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+}
+
+.package-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1) !important;
+}
+
+.package-card.border-primary {
+  border-width: 2px !important;
+  transform: scale(1.05);
+}
+
+.package-card.border-primary:hover {
+  transform: scale(1.05) translateY(-10px);
+}
+
+.card-img-top {
+  transition: transform 0.3s ease;
+}
+
+.package-card:hover .card-img-top {
+  transform: scale(1.05);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: #f8f9fa;
+  color: #0d6efd;
+}
+
+@media (max-width: 768px) {
+  .display-4 {
+    font-size: 2.5rem;
+  }
+
+  .package-card.border-primary {
+    transform: none;
+  }
+
+  .package-card.border-primary:hover {
+    transform: translateY(-5px);
+  }
+}

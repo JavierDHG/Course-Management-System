@@ -1,0 +1,35 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - media_volume:/app/media
+      - static_volume:/app/staticfiles
+    command: gunicorn main_course.wsgi:application --bind 0.0.0.0:8000
+    depends_on:
+      - db
+    environment:
+      - DEBUG=1
+      - DATABASE_NAME=course_management_db
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=persia098
+      - DATABASE_HOST=db
+
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=course_management_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=persia098
+    command: postgres -c listen_addresses='*'
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:

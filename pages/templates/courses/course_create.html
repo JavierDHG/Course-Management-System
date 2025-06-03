@@ -1,0 +1,14 @@
+{% extends 'layout/layout.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <h1>Crear Curso</h1>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="text" name="name" placeholder="Nombre del curso" required>
+        <input type="text" name="description" placeholder="Descripción del curso" required>
+        <input type="file" name="imagen" accept="image/*">
+        <button type="submit">Crear Curso</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends 'layout/layout.html' %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
+            <div class="card border-0 shadow-lg">
+                <!-- Header de la tarjeta -->
+                <div class="card-header bg-primary text-white text-center p-4">
+                    <div class="mb-3">
+                        <i class="bi bi-person-circle" style="font-size: 3rem;"></i>
+                    </div>
+                    <h1 class="h3 mb-0">Iniciar Sesión</h1>
+                    <p class="mb-0 text-white-50">Accede a tu cuenta</p>
+                </div>
+                
+                <!-- Cuerpo de la tarjeta -->
+                <div class="card-body p-4">
+                    <!-- Mensajes de error -->
+                    {% if form.errors or error %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            {% if error %}
+                                {{ error }}
+                            {% else %}
+                                Por favor corrige los errores a continuación.
+                            {% endif %}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endif %}
+
+                    <!-- Formulario de login -->
+                    <form method="POST" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <!-- Campo de email -->
+                        <div class="form-floating mb-3">
+                            <input type="email" 
+                                   class="form-control {% if form.email.errors %}is-invalid{% endif %}" 
+                                   id="email" 
+                                   name="email" 
+                                   placeholder="correo@ejemplo.com"
+                                   value="{{ form.email.value|default:'' }}"
+                                   required>
+                            <label for="email">
+                                <i class="bi bi-envelope me-1"></i>Correo electrónico
+                            </label>
+                            {% if form.email.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.email.errors.0 }}
+                                </div>
+                            {% else %}
+                                <div class="invalid-feedback">
+                                    Por favor ingresa un correo electrónico válido.
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Campo de contraseña -->
+                        <div class="form-floating mb-3">
+                            <input type="password" 
+                                   class="form-control {% if form.password.errors %}is-invalid{% endif %}" 
+                                   id="password" 
+                                   name="password" 
+                                   placeholder="Contraseña"
+                                   required>
+                            <label for="password">
+                                <i class="bi bi-key me-1"></i>Contraseña
+                            </label>
+                            <div class="input-group-text position-absolute end-0 top-50 translate-middle-y me-3" 
+                                 style="background: none; border: none; cursor: pointer; z-index: 10;"
+                                 onclick="togglePassword()">
+                                <i class="bi bi-eye" id="togglePasswordIcon"></i>
+                            </div>
+                            {% if form.password.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.password.errors.0 }}
+                                </div>
+                            {% else %}
+                                <div class="invalid-feedback">
+                                    Por favor ingresa tu contraseña.
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Botón de envío -->
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Footer de la tarjeta -->
+                <div class="card-footer bg-light text-center p-4">
+                    <p class="mb-0 text-muted">
+                        ¿No tienes cuenta? 
+                        <a href="{% url 'register' %}" class="text-primary text-decoration-none fw-semibold">
+                            Regístrate aquí
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/login.js' %}"></script>
+{% endblock %}
