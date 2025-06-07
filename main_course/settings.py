@@ -80,10 +80,10 @@ WSGI_APPLICATION = 'main_course.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DATABASE_NAME', 'course_management_db'),
-        'USER': os.getenv('DATABASE_USER', 'postgres'),
-        'PASSWORD': os.getenv('DATABASE_PASSWORD', 'persia098'),
-        'HOST': os.getenv('DATABASE_HOST', 'db'),
+        'NAME': os.getenv('DATABASE_NAME', '#'),
+        'USER': os.getenv('DATABASE_USER', '#'),
+        'PASSWORD': os.getenv('DATABASE_PASSWORD', '#'),
+        'HOST': os.getenv('DATABASE_HOST', '#'),
         'PORT': '5432',
     }
 }
