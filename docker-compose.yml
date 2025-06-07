@@ -2,12 +2,12 @@ services:
   web:
     build: .
     ports:
-      - "8000:8000"
+      - "#:#"
     volumes:
       - .:/app
       - media_volume:/app/media
       - static_volume:/app/staticfiles
-    command: gunicorn main_course.wsgi:application --bind 0.0.0.0:8000
+    command: gunicorn main_course.wsgi:application --bind 0.0.0.0:#
     depends_on:
       - db
     environment:
@@ -25,7 +25,7 @@ services:
       - POSTGRES_PASSWORD=#
     command: postgres -c listen_addresses='*'
     ports:
-      - "5433:5432"
+      - "#:#"
     volumes:
       - postgres_data:/var/lib/postgresql/data/
 
